@@ -1,0 +1,51 @@
+<html>
+<head>
+
+  <title>Sample 3d Graphs</title>
+
+  <style>
+      #c {
+          position: fixed;
+          top: 0px;
+          left: 0px;
+          width: 100%;
+          height: 100%;
+          z-index: -1;
+      }
+      
+      .plot {
+          margin: auto;
+      }
+  </style>
+
+</head>
+
+<body>
+  <script src="js/three.js"></script>
+  <script src="js/OrbitControls.js"></script>
+  <script src="plot_creation_functions.js"></script>
+  <script src="render_plots.js"></script>
+
+  
+  <canvas id="c"></canvas>
+
+  <div>
+    <script>
+    createPlot('3d',
+    [
+      createPlane([0, 1, -1], [1, -2, 0], [0, 0, 0], 'blue'),
+      createPlane([1, -1, 0], [0, -2, 1], [-1, -1, 0], 'green'),
+      createPlane([1, 0, -1], [2, -1, 0], [1, -1, -1], 'red'),
+      create3dPoint([1, -1, -1])
+    ],
+    [
+      ['(1, -1, -1)', [1.5, -1, -1]]
+    ]
+    )
+    </script>
+  </div>
+
+  <script src="start.js"></script>
+
+</body>
+</html>
