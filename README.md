@@ -1,6 +1,7 @@
 # 3d-Graphs
-Interactive 3d Graphs Using three.js
-To test it, run python -m http.server in the root directory then run sample.html
+Interactive 3d graphs Using three.js.
+
+To test these functions, run python -m http.server in the root directory then run sample.html
 
 The core function is createPlot in plot_creation_functions.js. This takes as argument a string ('2d' or '3d'), an array of three.js meshes created from the functions in plot_creation_functions.js, and an array of pairs (string, coords) for displaying text on the graph.
 
