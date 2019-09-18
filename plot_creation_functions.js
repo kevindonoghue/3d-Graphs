@@ -10,7 +10,7 @@
 // axisSize is the length of each positive axis
 // a good larger alternative to the default is width=height=500 and axisSize=10
 // labels is a list of arrays of the form ['a string', [1, 2, 3]] of a string and a 3d coordinate
-// or a list of arrays ['a string', [1, 2]] of a string and a 3d coordinate
+// or a list of arrays ['a string', [1, 2]] of a string and a 2d coordinate
 function createPlot(
   dimension,
   meshes = [],
