@@ -29,7 +29,6 @@ function createPlot(
   domElement.meshes = meshes.flat() // meshes is a list of lists of meshes, so you flatten them into a single list
   domElement.labels = labels;
   domElement.axisSize = axisSize;
-  document.getElementById('c').active = true;
 }
 
 // 3d line helper function
@@ -451,14 +450,14 @@ function createAxisLabels(font, dimension, axisSize) {
 // function to create an individual tick mark
 // returned in an array containing a single mesh
 // to be used in createAxisTickMarks
-function createTickMark(p, v, radius = 0.1, length = 0.01) {
+// takes as an argmument a CylinderGeometry that is reused by all the tick marks created
+function createTickMark(diskGeometry, p, v) {
   // creates a thin disk centered at p, pointing in direction v
   // returns it as a mesh
   // p and v are arrays of length 3
   let dir = new THREE.Vector3(...v);
   let center = new THREE.Vector3(...p);
-  let diskGeometry = new THREE.CylinderGeometry(radius, radius, length, 32);
-  diskGeometry.rotateX(Math.PI / 2);
+  
   let diskMaterial = new THREE.MeshBasicMaterial({
     color: 0x000000
   });
@@ -471,6 +470,12 @@ function createTickMark(p, v, radius = 0.1, length = 0.01) {
 // function to create tick marks on axis
 // dimension is either '2d' or '3d'
 function createAxisTickMarks(dimension, axisSize) {
+  const radius = 0.1;
+  const length = 0.01;
+
+  let diskGeometry = new THREE.CylinderGeometry(radius, radius, length, 32);
+  diskGeometry.rotateX(Math.PI / 2);
+
   const centers = [];
   for (let i = -axisSize + 1; i < axisSize; i += 1) {
     if (i != 0) {
@@ -482,14 +487,14 @@ function createAxisTickMarks(dimension, axisSize) {
   let tick = null;
   let direction = [1, 0, 0];
   centers.forEach(center => {
-    tick = createTickMark([center, 0, 0], direction);
+    tick = createTickMark(diskGeometry, [center, 0, 0], direction);
     tick.updateMatrix();
     totalTicksGeometry.mergeMesh(tick);
   });
 
   direction = [0, 1, 0];
   centers.forEach(center => {
-    tick = createTickMark([0, center, 0], direction);
+    tick = createTickMark(diskGeometry, [0, center, 0], direction);
     tick.updateMatrix();
     totalTicksGeometry.mergeMesh(tick);
   });
@@ -504,7 +509,7 @@ function createAxisTickMarks(dimension, axisSize) {
 
   direction = [0, 0, 1];
   centers.forEach(center => {
-    tick = createTickMark([0, 0, center], direction);
+    tick = createTickMark(diskGeometry, [0, 0, center], direction);
     tick.updateMatrix();
     totalTicksGeometry.mergeMesh(tick);
   });

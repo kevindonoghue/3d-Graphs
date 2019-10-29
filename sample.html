@@ -28,24 +28,36 @@
 
   
   <canvas id="c"></canvas>
-
   <div>
     <script>
-    createPlot('3d',
-    [
-      createPlane([0, 1, -1], [1, -2, 0], [0, 0, 0], 'blue'),
-      createPlane([1, -1, 0], [0, -2, 1], [-1, -1, 0], 'green'),
-      createPlane([1, 0, -1], [2, -1, 0], [1, -1, -1], 'red'),
-      create3dPoint([1, -1, -1])
-    ],
-    [
-      ['(1, -1, -1)', [1.5, -1, -1]]
-    ]
+    createPlot(
+      '3d',
+      [
+        createPlane([1, 1, 1], [0, 1, 0], [2, 3, 0], color='blue'),
+        create3dVector([-1, 1, 1], color='red')
+      ],
+      [
+        ['(-1, 1, 1)', [-1, 1, 1]]
+      ]
     )
     </script>
   </div>
 
-  <script src="start.js"></script>
+  <div>
+    <script>
+    createPlot(
+      '3d',
+      [
+        createParallelepiped(
+          [1, -1, 1], [1, 1, 1], [0, 1, 1],
+          [0, 0, 0],
+          'lightblue', 'blue'
+        )
+      ]
+    )
+    </script>
+  </div>
+  <script>plots();</script>
 
 </body>
 </html>
