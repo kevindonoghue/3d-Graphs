@@ -1,9 +1,9 @@
 // modified from https://threejs.org/examples/#webgl_multiple_elements_text
 
 
-async function plots() {
+async function plots(fontPath='./fonts/helvetiker_regular.typeface.json') {
   // load the font
-  const font = await loadFont('./fonts/helvetiker_regular.typeface.json');
+  const font = await loadFont(fontPath);
   
   // load the dom elements that have scene, camera, and controls data
   const scenes = getScenes(font);
