@@ -1,100 +1,19 @@
-// modified from https://threejs.org/examples/#webgl_multiple_elements_text
-
-
-async function plots(fontPath='./fonts/helvetiker_regular.typeface.json') {
-  // load the font
-  const font = await loadFont(fontPath);
-  
-  // load the dom elements that have scene, camera, and controls data
-  const scenes = getScenes(font);
-  
-  // load the canvas spanning the whole page
-  const canvas = document.getElementById('c');
-
-  // render everything and set up event handlers for controls and window resizing
-  init(canvas, scenes);
+function plots(fontPath = './fonts/helvetiker_regular.typeface.json') {
+  const numPlots = document.querySelectorAll('.plot').length;
+  if (numPlots > 8) {
+    plotGlobally(fontPath);
+  } else {
+    plotLocally(fontPath);
+  }
 }
 
 const loader = new THREE.FontLoader();
 function loadFont(url) {
   return new Promise((resolve, reject) => {
-  loader.load(url, resolve, undefined, reject);
+    loader.load(url, resolve, undefined, reject);
   });
 }
 
-// render scenes for every plot in the html document
-function init(canvas, scenes) {
-  // create renderer
-  renderer = new THREE.WebGLRenderer({
-    canvas: canvas,
-    antialias: true,
-    alpha: true,
-  });
-  // need to enable local clipping to make sure graphs are contained in bounding cubes
-  renderer.localClippingEnabled = true;
-
-  renderer.setPixelRatio(window.devicePixelRatio);
-
-  // set up listeners to render if controls are used or window is resized
-  scenes.forEach( scene => {
-    scene.controls.addEventListener('change', render);
-  })
-  window.addEventListener('resize', render);
-  window.addEventListener('scroll', render);
-
-  render();
-
-  // adjust the renderer on changing the window size
-  function updateSize() {
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-    if (canvas.width !== width || canvas.height !== height) {
-      renderer.setSize(width, height, false);
-    }
-  }
-
-
-  function render() {
-    // ensure the webpage outside the plots is not covered
-    renderer.setClearColor(0xffffff);
-    renderer.setScissorTest(false);
-    renderer.clear();
-
-    // adjust any window changes
-    updateSize();
-
-    // render each plot
-    renderer.setClearColor(0xffffff);
-    renderer.setScissorTest(true);
-    scenes.forEach(scene => {
-      const rect = scene.plot.getBoundingClientRect();
-      if (
-        rect.bottom < 0 ||
-        rect.top > renderer.domElement.clientHeight ||
-        rect.right < 0 ||
-        rect.left > renderer.domElement.clientWidth
-      ) {
-        return; // if the scene is outside the viewing area, don't bother rendering it
-      }
-
-      // get location of the plot on the window
-      const width = rect.right - rect.left;
-      const height = rect.bottom - rect.top;
-      const left = rect.left;
-      const bottom = renderer.domElement.clientHeight - rect.bottom;
-
-      // ensure the labels are looking at the camera
-      scene.labels.forEach(mesh => {
-        mesh.lookAt(scene.camera.position);
-      });
-
-      // render only in that part of the window
-      renderer.setViewport(left, bottom, width, height);
-      renderer.setScissor(left, bottom, width, height);
-      renderer.render(scene, scene.camera);
-    });
-  }
-}
 
 function getScenes(font) {
   scenes = []
@@ -182,10 +101,10 @@ function getScenes(font) {
     plot.labels.forEach(pair => {
       text = pair[0];
       p = pair[1];
-      if (dimension=='3d') {
+      if (dimension == '3d') {
         textMesh = create3dText(text, p, font);
       }
-      else if (dimension=='2d') {
+      else if (dimension == '2d') {
         textMesh = create2dText(text, p, font);
       }
       scene.add(textMesh);
@@ -216,6 +135,150 @@ function getScenes(font) {
   });
 
   return scenes;
+}
+
+async function plotGlobally(fontPath = './fonts/helvetiker_regular.typeface.json') {
+  console.log('plotting globally');
+  // load the font
+  const font = await loadFont(fontPath);
+
+  // load the dom elements that have scene, camera, and controls data
+  const scenes = getScenes(font);
+
+  // load the canvas spanning the whole page
+  const canvas = document.getElementById('global-c');
+
+  // render everything and set up event handlers for controls and window resizing
+  init(canvas, scenes);
+
+  // render scenes for every plot in the html document
+  function init(canvas, scenes) {
+    // create renderer
+    renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      antialias: true,
+      alpha: true,
+    });
+    // need to enable local clipping to make sure graphs are contained in bounding cubes
+    renderer.localClippingEnabled = true;
+
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    // set up listeners to render if controls are used or window is resized
+    scenes.forEach(scene => {
+      scene.controls.addEventListener('change', render);
+    })
+    window.addEventListener('resize', render);
+    window.addEventListener('scroll', render);
+
+    render();
+
+    // adjust the renderer on changing the window size
+    function updateSize() {
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      if (canvas.width !== width || canvas.height !== height) {
+        renderer.setSize(width, height, false);
+      }
+    }
+
+
+    function render() {
+      // ensure the webpage outside the plots is not covered
+      renderer.setClearColor(0xffffff);
+      renderer.setScissorTest(false);
+      renderer.clear();
+
+      // adjust any window changes
+      updateSize();
+
+      // render each plot
+      renderer.setClearColor(0xffffff);
+      renderer.setScissorTest(true);
+      scenes.forEach(scene => {
+        const rect = scene.plot.getBoundingClientRect();
+        if (
+          rect.bottom < 0 ||
+          rect.top > renderer.domElement.clientHeight ||
+          rect.right < 0 ||
+          rect.left > renderer.domElement.clientWidth
+        ) {
+          return; // if the scene is outside the viewing area, don't bother rendering it
+        }
+
+        // get location of the plot on the window
+        const width = rect.right - rect.left;
+        const height = rect.bottom - rect.top;
+        const left = rect.left;
+        const bottom = renderer.domElement.clientHeight - rect.bottom;
+
+        // ensure the labels are looking at the camera
+        scene.labels.forEach(mesh => {
+          mesh.lookAt(scene.camera.position);
+        });
+
+        // render only in that part of the window
+        renderer.setViewport(left, bottom, width, height);
+        renderer.setScissor(left, bottom, width, height);
+        renderer.render(scene, scene.camera);
+      });
+    }
+  }
+
+}
+
+
+
+
+
+
+
+async function plotLocally(fontPath = './fonts/helvetiker_regular.typeface.json') {
+  console.log('plotting locally');
+  // load the font
+  const font = await loadFont(fontPath);
+
+  // load the dom elements that have scene, camera, and controls data
+  const scenes = getScenes(font);
+
+  // render everything and set up event handlers for controls and window resizing
+  init(scenes);
+
+  // render scenes for every plot in the html document
+  function init(scenes) {
+    // set up listeners to render if controls are used or window is resized
+    scenes.forEach(scene => {
+      scene.controls.addEventListener('change', () => render(scene));
+      scene.canvas = document.createElement('canvas');
+      scene.canvas.className = 'local-c';
+      scene.canvas.style.height = scene.plot.style.height;
+      scene.canvas.style.width = scene.plot.style.width;
+      scene.plot.appendChild(scene.canvas);
+
+      // create renderer
+      scene.renderer = new THREE.WebGLRenderer({
+        canvas: scene.canvas,
+        antialias: true,
+        alpha: true,
+      });
+
+      const width = scene.canvas.clientWidth;
+      const height = scene.canvas.clientHeight;
+      scene.renderer.setSize(width*window.devicePixelRatio, height*window.devicePixelRatio, false);
+
+      // need to enable local clipping to make sure graphs are contained in bounding cubes
+      scene.renderer.localClippingEnabled = true;
+
+      render(scene);
+    })
+
+    function render(scene) {
+      scene.labels.forEach(mesh => {
+        mesh.lookAt(scene.camera.position);
+      });
+      scene.renderer.render(scene, scene.camera);
+    }
+  }
 }
 
 
