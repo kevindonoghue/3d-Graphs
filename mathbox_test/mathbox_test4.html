@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MathBox - Raw Context</title>
+  <script src="mathbox-master/build/mathbox-bundle.js"></script>
+  <link rel="stylesheet" href="mathbox-master/build/mathbox.css">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+  
+  <style>
+    #global-c {
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .local-c {
+      z-index: -1;
+    }
+    
+    .plot {
+      margin: auto;
+    }
+  </style>
+
+</head>
+<body>
+  <script src="plotFunctions.js"></script>
+
+  <div>
+    <script>
+      init3dPlot();
+      createCurve(
+        u => [u, u**2, u**3],
+        bounds=[-1, 1],
+        color='blue'
+      );
+      createAnimatedCurve(
+        (u, t) => [Math.sin(t)*u, u**2, u**3],
+        bounds=[-1, 1],
+        color='blue'
+      );
+    </script>
+  </div>
+  
+  <div>
+    <script>
+        init3dPlot();
+        createSurface(
+          (u, v) => [Math.cos(u)*Math.cos(v), Math.cos(u)*Math.sin(v), Math.sin(u)],
+          bounds=[[-Math.PI/2, Math.PI/2], [0, 2*Math.PI]],
+          color='red'
+        );
+    </script>
+  </div>
+
+  <div>
+    <script>
+      init3dPlot();
+      createAnimatedSurface(
+        (u, v, t) => [(2 + Math.sin(t))*Math.cos(u)*Math.cos(v), (2 + Math.sin(t))*Math.cos(u)*Math.sin(v), (2 + Math.sin(t))*Math.sin(u)],
+        bounds=[[-Math.PI/2, Math.PI/2], [0, 2*Math.PI]],
+        color='red'
+      );
+    </script>
+  </div>
+
+  <div>
+    <script>
+      init2dPlot({axisBound: 8, tickEvery: 2, numberAxes: true});
+      createCurve(
+        u => [u, u**2],
+        bounds=[-3, 3],
+        color='green',
+      );
+    </script>
+  </div>
+
+  <div>
+    <script>
+      init3dPlot({numberAxes: true});
+      createLine([0, 0, 0], [1, 2, 3], color='blue');
+      createPlane([1, -1, 0], [1, 0, 1], [1, 1, 0], color='green');
+      createSurface(
+      (u, v) => [u, v, u + v],
+      bounds = [[-10, 10], [-10, 10]],
+      color='red',
+      )
+    </script>
+  </div>
+
+
+  <script>
+    renderPlots();
+  </script>
+</body>
+</html>

@@ -273,6 +273,7 @@ async function plotLocally(fontPath = './fonts/helvetiker_regular.typeface.json'
     })
 
     function render(scene) {
+      console.log('render called');
       scene.labels.forEach(mesh => {
         mesh.lookAt(scene.camera.position);
       });

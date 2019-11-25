@@ -1,0 +1,7 @@
+// Enable STPQ mapping
+#define POSITION_STPQ;
+
+void getVertex(inout vec4 xyzw, inout vec4 stpq) {
+// Store XYZ per vertex in STPQ
+stpq = xyzw;
+}
